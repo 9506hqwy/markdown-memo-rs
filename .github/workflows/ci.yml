@@ -157,6 +157,9 @@ jobs:
         Get-Content ".\artifacts\SummaryGithub.md" > $env:GITHUB_STEP_SUMMARY
       working-directory: ./src-tauri
 
+    - name: Install tauri CLI
+      run: cargo install tauri-cli --version "^2.0.0" --locked
+
     - name: Create Artifacts
       run: cargo tauri build --debug
 
