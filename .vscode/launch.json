@@ -9,10 +9,11 @@
                 "args": [
                     "test",
                     "--no-run",
-                    "--lib"
-                ]
+                    "--bins"
+                ],
+                "cwd": "${workspaceFolder}/src-tauri"
             },
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}/src-tauri"
         }
     ]
 }

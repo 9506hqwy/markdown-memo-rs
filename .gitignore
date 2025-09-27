@@ -1,7 +1,2 @@
-artifacts/
-target/
-
-memory-profiling*
-perf.data*
-
-Cargo.lock
+dist/
+node_modules/

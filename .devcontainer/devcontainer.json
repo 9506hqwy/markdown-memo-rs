@@ -12,6 +12,10 @@
         "label=disable",
         "seccomp=unconfined"
     ],
+    // Add features.
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {}
+    },
     // Use 'onCreateCommand' to run commands after the container is created.
     "onCreateCommand": "/bin/bash ${containerWorkspaceFolder}/.devcontainer/on-create.sh",
     // Set session environment variables.

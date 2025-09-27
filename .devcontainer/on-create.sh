@@ -60,3 +60,21 @@ curl -sSLO --output-dir /tmp "https://github.com/koute/bytehound/releases/downlo
 tar -C /tmp -zxf /tmp/"${MEM_PKG}"
 sudo mv /tmp/{bytehound,bytehound-gather} /usr/local/bin
 sudo mv /tmp/libbytehound.so /usr/local/lib
+
+# Install tauri.
+## Intstall dependencies for Tauri.
+sudo apt-get install -y \
+    build-essential \
+    curl \
+    file \
+    gcc-mingw-w64-x86-64-win32 \
+    librsvg2-dev \
+    libssl-dev \
+    libwebkit2gtk-4.1-dev \
+    libxdo-dev \
+    libayatana-appindicator3-dev \
+    wget
+## Add the Windows target for cross-compilation.
+rustup target add x86_64-pc-windows-gnu
+## Install Tauri CLI.
+cargo install tauri-cli --version "^2.0.0" --locked

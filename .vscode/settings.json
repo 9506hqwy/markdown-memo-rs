@@ -3,6 +3,13 @@
     "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
     "editor.formatOnType": false,
+    "[javascript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.biome": "explicit",
+            "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome"
+    },
     "[markdown]": {
         "editor.codeActionsOnSave": {
             "source.fixAll.markdownlint": "explicit"
@@ -16,5 +23,12 @@
     "rust-analyzer.inlayHints.chainingHints.enable": false,
     "rust-analyzer.inlayHints.parameterHints.enable": false,
     "rust-analyzer.inlayHints.renderColons": false,
-    "rust-analyzer.inlayHints.typeHints.enable": false
+    "rust-analyzer.inlayHints.typeHints.enable": false,
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.biome": "explicit",
+            "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome"
+    }
 }
