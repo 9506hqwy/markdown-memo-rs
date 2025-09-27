@@ -4,107 +4,23 @@ on:
   push:
     tags: [ '**' ]
 
-env:
-  CARGO_TERM_COLOR: always
+permissions:
+  contents: read
 
 jobs:
-  build:
+  ubuntu:
+    uses: 9506hqwy/actions/.github/workflows/tauri-release-ubuntu.yml@main
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    steps:
-    - uses: actions/checkout@v5
-
-    - name: Install Dependencies
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt update
-            build-essential \
-            curl \
-            file \
-            librsvg2-dev \
-            libssl-dev \
-            libwebkit2gtk-4.1-dev \
-            libxdo-dev \
-            libayatana-appindicator3-dev \
-            wget
-
-    - name: Install npm Modules
-      run: npm install
-
-    - name: Install tauri CLI
-      run: cargo install tauri-cli --version "^2.0.0" --locked
-
-    - name: Create Artifacts
-      run: cargo tauri build
-
-    - name: Create Archive (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        RUST_TARGET=`rustup show active-toolchain | sed -e 's/[^-]*-\(.*\)\s.*/\1/'`
-
-        mkdir artifacts
-
-        CUR_DIR=$(pwd)
-        LIB_DIR='./target/release'
-        pushd "$LIB_DIR"
-        FILES=$(find . -maxdepth 1 -type f \( -name '*.so' -o -name '*.a' -o -executable \))
-        if [[ -n $FILES ]] ; then
-            tar -zcf "${CUR_DIR}/artifacts/${RUST_TARGET}.tar.gz" $FILES
-        fi
-        popd
-
-        echo "RUST_TARGET=${RUST_TARGET}" >> $GITHUB_ENV
-      working-directory: ./src-tauri
-
-    - name: Create Archive (Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        $RUST_TARGET = $(rustup show active-toolchain) -replace '[^-]*-(?<host>.*)\s.*', '${host}'
-
-        New-Item -Type Directory artifacts
-
-        $TARGETS = @(
-          'target\release\*.exe',
-          'target\release\*.dll',
-          'target\release\*.exp',
-          'target\release\*.lib'
-        )
-        $LIBS = @(Get-Item -Path $TARGETS)
-        if ($LIBS.Length -gt 0) {
-            Compress-Archive -Path $LIBS -DestinationPath ".\artifacts\${RUST_TARGET}.zip"
-        }
-
-        Write-Output "RUST_TARGET=$RUST_TARGET" >> $env:GITHUB_ENV
-      working-directory: ./src-tauri
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.RUST_TARGET }}
-        path: src-tauri/artifacts/
-        retention-days: 1
+  windows:
+    uses: 9506hqwy/actions/.github/workflows/tauri-release-windows.yml@main
 
   release:
 
-    needs: build
+    needs: [ubuntu, windows]
 
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
-    steps:
-    - uses: actions/checkout@v5
-
-    - uses: actions/download-artifact@v5
-      with:
-        path: artifacts
-
-    - name: Create Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh config set prompt disabled
-        gh release create "${GITHUB_REF_NAME}" ./artifacts/*/*  -t "v${GITHUB_REF_NAME}" -d
+    uses: 9506hqwy/actions/.github/workflows/common-create-release.yml@main
+    with:
+      title-prefix: v
