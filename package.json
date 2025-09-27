@@ -7,6 +7,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
+        "tauri": "tauri",
         "format": "biome format --write",
         "format-check": "biome format",
         "lint": "biome lint --write",
@@ -25,6 +26,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "2.2.4",
+        "@tauri-apps/cli": "^2.8.4",
         "typescript": "~5.9.2",
         "vite": "^7.1.6"
     }
