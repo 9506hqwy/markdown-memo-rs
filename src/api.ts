@@ -25,7 +25,7 @@ export async function createMemo(
   return await invoke("create_memo", { topicId, content });
 }
 
-export async function deleteMemo(topicId: string, id: string) {
+export async function deleteMemo(topicId: string, id: string): Promise<number> {
   return await invoke("delete_memo", { topicId, id });
 }
 
@@ -83,10 +83,20 @@ export async function createMemo(
   return m;
 }
 
-export async function deleteMemo(topicId: string, id: string) {
+export async function deleteMemo(topicId: string, id: string): Promise<number> {
   console.log(`call deleteMemo with topicId:${topicId} id:${id}`);
   const idx = memos.findIndex((a) => a.topicId === topicId && a.id === id);
   memos.splice(idx, 1);
+
+  const mm = memos.filter((a) => a.topicId === topicId);
+  if (mm.length === 0) {
+    delete tags[topicId];
+  } else {
+    mm.sort((a, b) => b.timestamp - a.timestamp);
+    mm[0]!.latest = true;
+  }
+
+  return mm.length;
 }
 
 export async function getMemo(topicId: string, id?: string): Promise<Memo> {

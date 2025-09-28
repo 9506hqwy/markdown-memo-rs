@@ -41,8 +41,10 @@ export class ContentHistory extends MemoElement {
 
         const task = new Task(this, {
           task: async () => {
-            await deleteMemo(this.topicId, memo.cardId);
+            const remains = await deleteMemo(this.topicId, memo.cardId);
+            this.currentHistoryId = undefined;
             this.loadTask.run();
+            this.dispatchMemoDeletedEvent(remains);
           },
         });
         task.run();

@@ -34,14 +34,16 @@ pub fn create_memo_fn(data: &AppData, topic_id: &str, content: &str) -> Result<m
     })
 }
 
-pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: &str) -> Result<(), Error> {
+pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: &str) -> Result<usize, Error> {
     let db = data.db.lock()?;
 
     let memos = db::Memo::all_by_topic(&db, topic_id)?;
     let mut delete_all = true;
-    for memo in memos {
+    let mut delete_count = 0;
+    for memo in &memos {
         if memo.id == id {
             memo.delete(&db)?;
+            delete_count += 1;
         } else {
             delete_all = false;
         }
@@ -67,7 +69,7 @@ pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: &str) -> Result<(), Er
         }
     }
 
-    Ok(())
+    Ok(memos.len() - delete_count)
 }
 
 pub fn get_memo_fn(data: &AppData, topic_id: &str, id: Option<&str>) -> Result<model::Memo, Error> {
@@ -267,7 +269,8 @@ mod tests {
             db::TopicTag::create(&conn, "tag1", "t1").unwrap();
         }
 
-        delete_memo_fn(&data, "t1", "m1").unwrap();
+        let deleted = delete_memo_fn(&data, "t1", "m1").unwrap();
+        assert_eq!(0, deleted);
 
         {
             let conn = data.db.lock().unwrap();
@@ -295,7 +298,8 @@ mod tests {
             db::TopicTag::create(&conn, "tag1", "t1").unwrap();
         }
 
-        delete_memo_fn(&data, "t1", "m1").unwrap();
+        let deleted = delete_memo_fn(&data, "t1", "m1").unwrap();
+        assert_eq!(1, deleted);
 
         {
             let conn = data.db.lock().unwrap();

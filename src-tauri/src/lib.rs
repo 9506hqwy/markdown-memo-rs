@@ -35,9 +35,9 @@ fn create_memo(
 }
 
 #[tauri::command]
-fn delete_memo(state: State<'_, AppData>, topic_id: &str, id: &str) -> Result<(), ()> {
-    delete_memo_fn(state.inner(), topic_id, id).or(Err(()))?;
-    Ok(())
+fn delete_memo(state: State<'_, AppData>, topic_id: &str, id: &str) -> Result<usize, ()> {
+    let remains = delete_memo_fn(state.inner(), topic_id, id).or(Err(()))?;
+    Ok(remains)
 }
 
 #[tauri::command]

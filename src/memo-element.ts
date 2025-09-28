@@ -56,6 +56,10 @@ export class MemoElement extends LitElement {
     return this.dispatchCustomEvent("mm-memo-delete-request", { memo: memo });
   }
 
+  protected dispatchMemoDeletedEvent(remains: number) {
+    return this.dispatchCustomEvent("mm-memo-deleted", { remains: remains });
+  }
+
   protected dispatchMemoSaveRequestEvent(): boolean {
     return this.dispatchCustomEvent("mm-memo-save-request");
   }
