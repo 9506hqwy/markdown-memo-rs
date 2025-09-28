@@ -152,6 +152,10 @@ export class MemoApp extends MemoElement {
       }
     });
 
+    attr.addEventListener("mm-memo-deleted", () => {
+      editor.refresh();
+    });
+
     this.addEventListener("mm-collapsed-changed", () => {
       // Do not use `getBoundingClientRect`.
       // Because element width not changed at this timing.

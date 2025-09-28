@@ -83,6 +83,10 @@ export class ContentEditor extends MemoElement {
     `;
   }
 
+  refresh() {
+    this.loadTask.run();
+  }
+
   save() {
     if (this.modified) {
       if (this.view?.state.doc) {
