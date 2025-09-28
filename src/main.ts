@@ -109,6 +109,8 @@ export class MemoApp extends MemoElement {
       const topic = ce.detail.topic as MemoCard;
 
       if (!editor.modified || window.confirm("Discard changes ?")) {
+        opBar.setStatus(false);
+
         if (!topic.current) {
           editor.topicId = topic.cardId;
           editor.basecardId = undefined;
@@ -143,6 +145,7 @@ export class MemoApp extends MemoElement {
       const memo = ce.detail.memo as MemoCard;
 
       if (!editor.modified || window.confirm("Discard changes ?")) {
+        opBar.setStatus(false);
         editor.basecardId = memo.cardId;
       } else {
         e.preventDefault();
