@@ -3,7 +3,7 @@ import { Task } from "@lit/task";
 import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { Topic } from "./api";
-import { getTopics } from "./api";
+import { deleteTopic, getTopics } from "./api";
 import type { MemoCard } from "./memo-card";
 import { MemoElement } from "./memo-element";
 import "./memo-card";
@@ -82,6 +82,24 @@ export class NavigationMenu extends MemoElement {
     `;
   }
 
+  override firstUpdated() {
+    this.renderRoot.addEventListener("mm-memo-delete-request", (e) => {
+      if (window.confirm("Delete ?")) {
+        const ce = e as CustomEvent;
+        const memo = ce.detail.memo as MemoCard;
+
+        const task = new Task(this, {
+          task: async () => {
+            const remains = await deleteTopic(memo.cardId);
+            this.loadTask.run();
+            this.dispatchMemoDeletedEvent(remains);
+          },
+        });
+        task.run();
+      }
+    });
+  }
+
   refresh(topicId: string) {
     this.currentTopicId = topicId;
     this.loadTask.run();
@@ -127,6 +145,7 @@ export class NavigationMenu extends MemoElement {
           card-title="${topic.title}"
           timestamp="${topic.timestamp}"
           ?current="${this.currentTopicId === topic.id}"
+          ?deletable="${true}"
           @click="${this.clickTopic}"
         ></memo-card>
       `);

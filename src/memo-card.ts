@@ -73,7 +73,7 @@ export class MemoCard extends MemoElement {
           <p>${new Date(this.timestamp * 1000).toLocaleString()}</p>
         </div>
         ${
-          this.deletable
+          this.deletable && !this.current
             ? html`<p @click=${this.deleteHistory}>${deleteIcon.node[0]}</p>`
             : html``
         }

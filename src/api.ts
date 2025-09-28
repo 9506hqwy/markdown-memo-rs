@@ -29,6 +29,10 @@ export async function deleteMemo(topicId: string, id: string): Promise<number> {
   return await invoke("delete_memo", { topicId, id });
 }
 
+export async function deleteTopic(topicId: string): Promise<number> {
+  return await invoke("delete_topic", { topicId });
+}
+
 export async function getMemo(topicId: string, id?: string): Promise<Memo> {
   return await invoke("get_memo", { topicId, id });
 }
@@ -97,6 +101,22 @@ export async function deleteMemo(topicId: string, id: string): Promise<number> {
   }
 
   return mm.length;
+}
+
+export async function deleteTopic(topicId: string): Promise<number> {
+  console.log(`call deleteTopic with topicId:${topicId}`);
+
+  const mm = memos.filter((a) => a.topicId === topicId);
+  for (const m of mm) {
+    const idx = memos.findIndex(
+      (a) => a.topicId === m.topicId && a.id === m.id,
+    );
+    memos.splice(idx, 1);
+  }
+
+  delete tags[topicId];
+
+  return 0;
 }
 
 export async function getMemo(topicId: string, id?: string): Promise<Memo> {

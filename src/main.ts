@@ -152,20 +152,6 @@ export class MemoApp extends MemoElement {
       }
     });
 
-    attr.addEventListener("mm-memo-deleted", (e) => {
-      const ce = e as CustomEvent;
-      const remains = ce.detail.remains as number;
-
-      if (remains === 0) {
-        // Create new topic.
-        const topicId = self.crypto.randomUUID();
-        navMenu.refresh(topicId);
-        editor.topicId = topicId;
-        editor.basecardId = undefined;
-        attr.refresh(topicId, undefined);
-      }
-    });
-
     this.addEventListener("mm-collapsed-changed", () => {
       // Do not use `getBoundingClientRect`.
       // Because element width not changed at this timing.

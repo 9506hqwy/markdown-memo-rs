@@ -34,22 +34,21 @@ pub fn create_memo_fn(data: &AppData, topic_id: &str, content: &str) -> Result<m
     })
 }
 
-pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: &str) -> Result<usize, Error> {
+pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: Option<&str>) -> Result<usize, Error> {
     let db = data.db.lock()?;
 
     let memos = db::Memo::all_by_topic(&db, topic_id)?;
-    let mut delete_all = true;
     let mut delete_count = 0;
     for memo in &memos {
-        if memo.id == id {
+        if id.is_none() || memo.id == id.unwrap() {
             memo.delete(&db)?;
             delete_count += 1;
-        } else {
-            delete_all = false;
         }
     }
 
-    if delete_all {
+    let remains = memos.len() - delete_count;
+
+    if remains == 0 {
         // Delete related topic.
         let topics = db::Topic::all(&db)?;
         for topic in topics {
@@ -69,7 +68,7 @@ pub fn delete_memo_fn(data: &AppData, topic_id: &str, id: &str) -> Result<usize,
         }
     }
 
-    Ok(memos.len() - delete_count)
+    Ok(remains)
 }
 
 pub fn get_memo_fn(data: &AppData, topic_id: &str, id: Option<&str>) -> Result<model::Memo, Error> {
@@ -140,6 +139,10 @@ fn parse_title(content: &str) -> String {
 }
 
 // -----------------------------------------------------------------------------------------------
+
+pub fn delete_topic_fn(data: &AppData, topic_id: &str) -> Result<usize, Error> {
+    delete_memo_fn(data, topic_id, None)
+}
 
 pub fn get_topics_fn(data: &AppData, keyword: &str) -> Result<Vec<model::Topic>, Error> {
     let db = data.db.lock()?;
@@ -260,6 +263,35 @@ mod tests {
     }
 
     #[test]
+    fn test_delete_memo_fn_id_default() {
+        let data = setup_appdate();
+        {
+            let conn = data.db.lock().unwrap();
+            db::Memo::create(&conn, "m1", "t1", 0, "content1").unwrap();
+            db::Memo::create(&conn, "m2", "t1", 0, "content2").unwrap();
+            db::Topic::create(&conn, "t1", "title1", 0).unwrap();
+            db::TopicTag::create(&conn, "tag1", "t1").unwrap();
+        }
+
+        let deleted = delete_memo_fn(&data, "t1", None).unwrap();
+        assert_eq!(0, deleted);
+
+        {
+            let conn = data.db.lock().unwrap();
+
+            let memos = db::Memo::all_by_topic(&conn, "t1").unwrap();
+            assert_eq!(0, memos.len());
+
+            let topics = db::Topic::all(&conn).unwrap();
+            let topic = topics.iter().filter(|t| t.id == "t1");
+            assert_eq!(0, topic.count());
+
+            let tags = db::TopicTag::all_by_topic(&conn, "t1").unwrap();
+            assert_eq!(0, tags.len());
+        }
+    }
+
+    #[test]
     fn test_delete_memo_fn_all() {
         let data = setup_appdate();
         {
@@ -269,7 +301,7 @@ mod tests {
             db::TopicTag::create(&conn, "tag1", "t1").unwrap();
         }
 
-        let deleted = delete_memo_fn(&data, "t1", "m1").unwrap();
+        let deleted = delete_memo_fn(&data, "t1", Some("m1")).unwrap();
         assert_eq!(0, deleted);
 
         {
@@ -298,7 +330,7 @@ mod tests {
             db::TopicTag::create(&conn, "tag1", "t1").unwrap();
         }
 
-        let deleted = delete_memo_fn(&data, "t1", "m1").unwrap();
+        let deleted = delete_memo_fn(&data, "t1", Some("m1")).unwrap();
         assert_eq!(1, deleted);
 
         {

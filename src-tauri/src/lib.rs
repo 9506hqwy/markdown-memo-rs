@@ -7,8 +7,8 @@ use rusqlite::Connection;
 use std::path::Path;
 
 use api::{
-    add_memo_tag_fn, create_memo_fn, delete_memo_fn, get_memo_all_fn, get_memo_fn, get_memo_tag_fn,
-    get_topics_fn, remove_memo_tag_fn,
+    add_memo_tag_fn, create_memo_fn, delete_memo_fn, delete_topic_fn, get_memo_all_fn, get_memo_fn,
+    get_memo_tag_fn, get_topics_fn, remove_memo_tag_fn,
 };
 use std::sync::Mutex;
 use tauri::{Builder, Manager, State};
@@ -36,7 +36,13 @@ fn create_memo(
 
 #[tauri::command]
 fn delete_memo(state: State<'_, AppData>, topic_id: &str, id: &str) -> Result<usize, ()> {
-    let remains = delete_memo_fn(state.inner(), topic_id, id).or(Err(()))?;
+    let remains = delete_memo_fn(state.inner(), topic_id, Some(id)).or(Err(()))?;
+    Ok(remains)
+}
+
+#[tauri::command]
+fn delete_topic(state: State<'_, AppData>, topic_id: &str) -> Result<usize, ()> {
+    let remains = delete_topic_fn(state.inner(), topic_id).or(Err(()))?;
     Ok(remains)
 }
 
@@ -99,6 +105,7 @@ pub fn run() {
             add_memo_tag,
             create_memo,
             delete_memo,
+            delete_topic,
             get_memo,
             get_memo_all,
             get_memo_tag,
