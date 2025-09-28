@@ -55,6 +55,7 @@ const memos: Memo[] = [];
 const tags: { [key: string]: string[] } = {};
 
 export async function addMemoTag(topicId: string, tag: string) {
+  console.log(`call addMemoTag with topicId:${topicId} tag:${tag}`);
   tags[topicId] ||= [];
   tags[topicId].push(tag);
 }
@@ -63,6 +64,7 @@ export async function createMemo(
   topicId: string,
   content: string,
 ): Promise<Memo> {
+  console.log(`call createMemo with topicId:${topicId}`);
   for (const m of memos) {
     if (m.topicId === topicId) {
       m.latest = false;
@@ -82,11 +84,13 @@ export async function createMemo(
 }
 
 export async function deleteMemo(topicId: string, id: string) {
+  console.log(`call deleteMemo with topicId:${topicId} id:${id}`);
   const idx = memos.findIndex((a) => a.topicId === topicId && a.id === id);
-  memos.slice(idx, idx + 1);
+  memos.splice(idx, 1);
 }
 
 export async function getMemo(topicId: string, id?: string): Promise<Memo> {
+  console.log(`call getMemo with topicId:${topicId} id:${id}`);
   const m = memos.find(
     (a) =>
       a.topicId === topicId && ((id === undefined && a.latest) || a.id === id),
@@ -103,6 +107,7 @@ export async function getMemo(topicId: string, id?: string): Promise<Memo> {
 }
 
 export async function getMemoHistory(topicId: string): Promise<Memo[]> {
+  console.log(`call getMemoHistory with topicId:${topicId}`);
   const r: Memo[] = [];
   for (const m of memos) {
     if (m.topicId === topicId) {
@@ -114,10 +119,12 @@ export async function getMemoHistory(topicId: string): Promise<Memo[]> {
 }
 
 export async function getMemoTag(topicId: string): Promise<string[]> {
+  console.log(`call getMemoTag with topicId:${topicId}`);
   return tags[topicId] || [];
 }
 
 export async function getTopics(keyword: string): Promise<Topic[]> {
+  console.log(`call getTopics with keyword:${keyword}`);
   const topics: Topic[] = [];
   for (const m of memos) {
     const t = topics.find((a) => a.id === m.topicId);
@@ -138,8 +145,9 @@ export async function getTopics(keyword: string): Promise<Topic[]> {
 }
 
 export async function removeMemoTag(topicId: string, tag: string) {
+  console.log(`call removeMemoTag with topicId:${topicId} tag:${tag}`);
   tags[topicId] ||= [];
   const idx = tags[topicId].indexOf(tag);
-  tags[topicId].slice(idx, idx + 1);
+  tags[topicId].splice(idx, 1);
 }
 */
