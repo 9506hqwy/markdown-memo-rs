@@ -37,11 +37,11 @@ export class ContentHistory extends MemoElement {
     this.renderRoot.addEventListener("mm-memo-delete-request", (e) => {
       if (window.confirm("Delete ?")) {
         const ce = e as CustomEvent;
-        const history = ce.detail.history as MemoCard;
+        const memo = ce.detail.memo as MemoCard;
 
         const task = new Task(this, {
           task: async () => {
-            await deleteMemo(this.topicId, history.cardId);
+            await deleteMemo(this.topicId, memo.cardId);
             this.loadTask.run();
           },
         });
