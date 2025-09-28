@@ -103,15 +103,7 @@ export class ContentTag extends MemoElement {
       return;
     }
 
-    if (window.confirm("Add ?")) {
-      const task = new Task(this, {
-        task: async () => {
-          await addMemoTag(this.topicId, content);
-          this.dispatchTagChangedEvent(content);
-        },
-      });
-      task.run();
-    }
+    this.dispatchTagAddRequestEvent(content);
   }
 
   private enterTag(e: KeyboardEvent) {
@@ -161,6 +153,31 @@ export class ContentTags extends MemoElement {
   }
 
   override firstUpdated() {
+    this.renderRoot.addEventListener("mm-tag-add-request", (e) => {
+      const ce = e as CustomEvent;
+      const tag: string = ce.detail.tag;
+
+      for (const t of this.renderRoot.querySelectorAll<ContentTag>(
+        "content-tag",
+      )) {
+        if (t.name === tag) {
+          window.alert(`Already exists tag. '${tag}'`);
+          return;
+        }
+      }
+
+      if (window.confirm("Add ?")) {
+        const task = new Task(this, {
+          task: async () => {
+            await addMemoTag(this.topicId, tag);
+            this.loadTask.run();
+            this.dispatchTagChangedEvent(tag);
+          },
+        });
+        task.run();
+      }
+    });
+
     this.renderRoot.addEventListener("mm-tag-changed", () => {
       this.loadTask.run();
     });

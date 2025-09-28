@@ -70,6 +70,10 @@ export class MemoElement extends LitElement {
     });
   }
 
+  protected dispatchTagAddRequestEvent(tag: string) {
+    return this.dispatchCustomEvent("mm-tag-add-request", { tag: tag });
+  }
+
   protected dispatchTagChangedEvent(tag: string) {
     return this.dispatchCustomEvent("mm-tag-changed", { tag: tag });
   }
