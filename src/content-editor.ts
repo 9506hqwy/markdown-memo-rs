@@ -29,7 +29,7 @@ export class ContentEditor extends MemoElement {
     css`
       .md-editor {
         height: 100%;
-        width: calc(100vw - 400px);
+        width: calc(100vw - 500px); /* hardcoded at main.ts */
       }
 
       .cm-editor {

@@ -24,6 +24,10 @@ export class MemoCard extends MemoElement {
       background-color: #666666;
     }
 
+    div {
+      overflow-x: hidden;
+    }
+
     svg {
       width 24px;
       height: 24px;
@@ -34,7 +38,7 @@ export class MemoCard extends MemoElement {
     p {
       margin: 0px;
       padding: 0px;
-      overflow: hidden;
+      overflow-x: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }

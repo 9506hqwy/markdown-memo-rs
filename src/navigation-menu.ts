@@ -14,7 +14,7 @@ export class NavigationMenu extends MemoElement {
     MemoElement.styles,
     css`
       nav {
-        width: 200px; /* hardcoded at main.ts */
+        width: 250px; /* hardcoded at main.ts */
         height: 100%;
         display: flex;
         flex-direction: column;

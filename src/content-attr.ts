@@ -13,7 +13,7 @@ export class ContentAttr extends MemoElement {
     MemoElement.styles,
     css`
       aside {
-        width: 200px; /* hardcoded at main.ts */
+        width: 250px; /* hardcoded at main.ts */
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -31,7 +31,6 @@ export class ContentAttr extends MemoElement {
       }
 
       hr {
-        width: 90%;
         border-style: dotted;
       }
 

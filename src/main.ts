@@ -152,8 +152,8 @@ export class MemoApp extends MemoElement {
     this.addEventListener("mm-collapsed-changed", () => {
       // Do not use `getBoundingClientRect`.
       // Because element width not changed at this timing.
-      const navWidth = navMenu.collapsed ? 50 : 200;
-      const attrWidth = attr.collapsed ? 50 : 200;
+      const navWidth = navMenu.collapsed ? 50 : 250;
+      const attrWidth = attr.collapsed ? 50 : 250;
       const sideWidth = navWidth + attrWidth;
       editor.setWidth(`calc(100vw - ${sideWidth}px)`);
     });
