@@ -92,6 +92,7 @@ export class ContentEditor extends MemoElement {
       if (this.view?.state.doc) {
         const content = this.view?.state.doc.toString();
         createMemo(this.topicId, content).then((m) => {
+          this.basecardId = undefined;
           this.dispatchMemoCreatedEvent(m);
         });
       }
