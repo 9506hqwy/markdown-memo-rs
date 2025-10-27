@@ -14,7 +14,7 @@
         "lint-check": "biome lint --error-on-warnings"
     },
     "dependencies": {
-        "@codemirror/lang-markdown": "^6.4.0",
+        "@codemirror/lang-markdown": "^6.5.0",
         "@codemirror/language-data": "^6.5.1",
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
         "@fortawesome/free-regular-svg-icons": "^7.1.0",
