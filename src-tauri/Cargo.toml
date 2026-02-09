@@ -11,7 +11,7 @@ keywords = ["markdown"]
 categories = ["development-tools"]
 
 [build-dependencies]
-tauri-build = { version = "2.5.4", features = [] }
+tauri-build = { version = "2.5.5", features = [] }
 
 [dependencies]
 dirs = "6.0.0"
