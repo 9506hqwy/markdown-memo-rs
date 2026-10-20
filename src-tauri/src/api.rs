@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::{db, model, AppData};
+use crate::{AppData, db, model};
 use std::time::SystemTime;
 use uuid::Uuid;
 
