@@ -5,8 +5,8 @@
     "identifier": "9506hqwy.markdown.memo",
     "mainBinaryName": "memo",
     "build": {
-        "beforeBuildCommand": "npm run build",
-        "beforeDevCommand": "npm run dev",
+        "beforeBuildCommand": "bun run build",
+        "beforeDevCommand": "bun run dev",
         "devUrl": "http://localhost:1420",
         "frontendDist": "../dist"
     },
