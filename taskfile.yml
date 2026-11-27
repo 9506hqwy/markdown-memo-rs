@@ -2,53 +2,71 @@ version: "3"
 
 tasks:
   format:
-    cmds:
-      - cargo fmt --all --check
+    deps:
+      - format-js
+      - format-rs
+
+  format-js:
+    cmd: bun run format
+
+  format-rs:
+    cmd: cargo fmt --all
+    dir: ./src-tauri
 
   lint:
-    cmds:
-      - cargo clippy --all-targets -- -Dwarnings
+    deps:
+      - lint-js
+      - lint-rs
+
+  lint-js:
+    cmd: bun run lint
+
+  lint-rs:
+    cmd: cargo clippy --all-targets -- -Dwarnings
+    dir: ./src-tauri
 
   debug-build:
-    cmds:
-      - cargo build --workspace --all-features
-      - cargo build --workspace --all-features --examples
+    cmd: bun run tauri build --debug
 
   debug-build-musl:
-    cmds:
-      - cargo build --target x86_64-unknown-linux-musl --workspace --all-features
-      - cargo build --target x86_64-unknown-linux-musl --workspace --all-features --examples
+    cmd: bun run tauri build --debug --target x86_64-unknown-linux-musl
 
   debug-build-win:
-    cmds:
-      - cargo build --target x86_64-pc-windows-gnu --workspace --all-features
-      - cargo build --target x86_64-pc-windows-gnu --workspace --all-features --examples
+    cmd: bun run tauri build --debug --target x86_64-pc-windows-gnu
 
   release-build:
-    cmds:
-      - cargo build --release --workspace --all-features
-      - cargo build --release --workspace --all-features --examples
+    cmd: bun run tauri build
 
   test:
-    cmds:
-      - cargo test
+    cmd: cargo test
+    dir: ./src-tauri
 
   deps-update:
-    cmds:
-      - cargo upgrade
+    deps:
+      - deps-update-js
+      - deps-update-rs
 
-  license-check:
+  deps-update-js:
+    cmd: bun update
+
+  deps-update-rs:
+    cmd: cargo upgrade --incompatible
+    dir: ./src-tauri
+
+  license-check-rs:
     cmds:
-      - rm -rf artifacts/licenses
-      - mkdir -p artifacts/licenses
-      - ./tools/cargo-licenses.sh -o artifacts/licenses --target all
+      - rm -rf ../artifacts/licenses
+      - mkdir -p ../artifacts/licenses
+      - ../tools/cargo-licenses.sh -o ../artifacts/licenses --target all
+    dir: ./src-tauri
 
   doc-gen:
-    cmds:
-      - cargo doc
+    cmd: cargo doc
+    dir: ./src-tauri
 
-  sbom-gen:
+  sbom-gen-rs:
     cmds:
-      - mkdir -p artifacts
-      - find ./artifacts -name "*.sbom.json" -delete
-      - ./tools/cargo-sbom.sh -o artifacts --all-features -a --no-build-deps
+      - mkdir -p ../artifacts
+      - find ../artifacts -name "*.sbom.json" -delete
+      - ../tools/cargo-sbom.sh -o ../artifacts --all-features -a --no-build-deps
+    dir: ./src-tauri
